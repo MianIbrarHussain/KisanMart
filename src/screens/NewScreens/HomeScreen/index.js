@@ -247,30 +247,25 @@ const HomeScreen = ({navigation}) => {
           }}
         />
       ) : (
-        <View
-          style={{
-            alignSelf: 'center',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flex: 1,
-          }}>
+        <View style={styles.noDataCont}>
           <Image
-            source={require('../../../assets/images/nothing.png')}
+            source={
+              isSeller
+                ? require('../../../assets/images/startselling.png')
+                : require('../../../assets/images/nothing.png')
+            }
             style={{resizeMode: 'contain'}}
           />
-          <Text
-            style={{
-              fontFamily: FontFamily.headerBold2,
-              fontSize: 16,
-              color: 'black',
-            }}>
-            No Listings Yet!
+          <Text style={styles.noList}>
+            {isSeller ? `Welcome ${userData.name}` : 'No Listings Yet!'}
           </Text>
           <View style={{width: '75%'}}>
             <Text style={{alignSelf: 'center', textAlign: 'center'}}>
-              But don't worry, we're working hard to bring you a wide variety of
+              {isSeller
+                ? `Your products have the power to transform this empty screen into a thriving marketplace. List your items and watch them find happy homes with eager buyers. Let's grow together!`
+                : `But don't worry, we're working hard to bring you a wide variety of
               products soon! Stay tuned for updates and be the first to discover
-              amazing deals when they arrive.
+              amazing deals when they arrive.`}
             </Text>
           </View>
         </View>

@@ -1,6 +1,6 @@
 import {StyleSheet, Dimensions} from 'react-native';
 import {getFontSize} from '../../../utils/utils';
-import {Colors, CustomStyles} from '../../../theme/theme';
+import {Colors, CustomStyles, FontFamily} from '../../../theme/theme';
 
 const {width} = Dimensions.get('screen');
 
@@ -142,6 +142,18 @@ const styles = StyleSheet.create({
   sectionStyles: {
     flexGrow: 1,
     paddingHorizontal: 10,
+  },
+  noDataCont: {
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  noList: {
+    fontFamily: FontFamily.headerBold2,
+    fontSize: 16,
+    color: 'black',
+    marginTop: 5,
   },
 });
 
