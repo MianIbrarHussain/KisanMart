@@ -105,6 +105,7 @@ const HomeScreen = ({navigation}) => {
       <FlatList
         data={item}
         horizontal={true}
+        style={{flexDirection: i18n.language === 'en' ? 'row' : 'row-reverse'}}
         showsHorizontalScrollIndicator={false}
         renderItem={({item}) => (
           <ListingRenderItem
@@ -232,9 +233,9 @@ const HomeScreen = ({navigation}) => {
           renderItem={renderCategory}
         />
       </View>
-      {data[0]?.data.length === 0 ||
-      data[1]?.data.length === 0 ||
-      data[2]?.data.length === 0 ? (
+      {data[0]?.data.length !== 0 &&
+      data[1]?.data.length !== 0 &&
+      data[2]?.data.length !== 0 ? (
         <SectionList
           sections={data}
           style={styles.sectionStyles}
