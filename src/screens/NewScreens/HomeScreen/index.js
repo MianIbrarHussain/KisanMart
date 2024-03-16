@@ -13,7 +13,7 @@ import {Icon} from '@rneui/base';
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {Colors, CustomStyles} from '../../../theme/theme';
+import {Colors, CustomStyles, FontFamily} from '../../../theme/theme';
 
 import styles from './styles';
 import {handleGetProducts} from '../../../redux/actions/home';
@@ -86,7 +86,22 @@ const HomeScreen = ({navigation}) => {
   };
 
   const renderData = ({item, index, section}) => {
-    return (
+    return item.length === 0 ? (
+      <View
+        style={{
+          alignSelf: 'center',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <Image
+          source={require('../../../assets/images/nodata.png')}
+          style={{height: 100, width: 80, resizeMode: 'contain'}}
+        />
+        <Text style={{fontFamily: FontFamily.headerSemiBold}}>
+          Working on it
+        </Text>
+      </View>
+    ) : (
       <FlatList
         data={item}
         horizontal={true}
@@ -159,23 +174,7 @@ const HomeScreen = ({navigation}) => {
       ]);
     }
 
-    console.log([
-      res.topSelling.length !== 0 && {
-        title: t('topSelling'),
-        data: [res.topSelling],
-      },
-      {
-        title: t('exportQuality'),
-        data: [res.exportQuality],
-      },
-      {
-        title: t('fruits&Vegs'),
-        data: [res.fruitsVeges],
-      },
-    ]);
-
-    console.log('res.fruitsVeges.length');
-    console.log(res.fruitsVeges.length);
+    console.log(data);
   };
 
   const onError = err => {
@@ -233,17 +232,49 @@ const HomeScreen = ({navigation}) => {
           renderItem={renderCategory}
         />
       </View>
-      <SectionList
-        sections={data}
-        style={styles.sectionStyles}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        renderSectionHeader={renderSectionHeader}
-        renderItem={renderData}
-        contentContainerStyle={{
-          paddingBottom: 20,
-        }}
-      />
+      {data[0]?.data.length === 0 ||
+      data[1]?.data.length === 0 ||
+      data[2]?.data.length === 0 ? (
+        <SectionList
+          sections={data}
+          style={styles.sectionStyles}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          renderSectionHeader={renderSectionHeader}
+          renderItem={renderData}
+          contentContainerStyle={{
+            paddingBottom: 20,
+          }}
+        />
+      ) : (
+        <View
+          style={{
+            alignSelf: 'center',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flex: 1,
+          }}>
+          <Image
+            source={require('../../../assets/images/nothing.png')}
+            style={{resizeMode: 'contain'}}
+          />
+          <Text
+            style={{
+              fontFamily: FontFamily.headerBold2,
+              fontSize: 16,
+              color: 'black',
+            }}>
+            No Listings Yet!
+          </Text>
+          <View style={{width: '75%'}}>
+            <Text style={{alignSelf: 'center', textAlign: 'center'}}>
+              But don't worry, we're working hard to bring you a wide variety of
+              products soon! Stay tuned for updates and be the first to discover
+              amazing deals when they arrive.
+            </Text>
+          </View>
+        </View>
+      )}
       {isSeller && (
         <TouchableOpacity
           style={{
