@@ -157,7 +157,6 @@ const HomeScreen = ({navigation}) => {
           data: [res],
         },
       ]);
-      setShowActivity(false);
     } else {
       setShowActivity(false);
 
@@ -188,9 +187,6 @@ const HomeScreen = ({navigation}) => {
   };
 
   const translatedData = async res => {
-    console.log(res);
-    console.log(i18n.language);
-
     if (isSeller) {
       const array = res.map(item => {
         return item.productName;
@@ -200,7 +196,6 @@ const HomeScreen = ({navigation}) => {
         tld: 'com',
         to: 'ur',
       });
-
       const translatedArray = res.map((item, index) => {
         return {
           ...item,
@@ -213,28 +208,67 @@ const HomeScreen = ({navigation}) => {
           data: [translatedArray],
         },
       ]);
-
+      setLoad('');
       console.log(urduData);
     } else {
-      const array = res.topSelling.map(item => {
+      const topSellingArr = res.topSelling.map(item => {
         return item.productName;
       });
-      console.log(array);
-      const result = await translate(array, {
+      const topSellingResult = await translate(topSellingArr, {
         tld: 'com',
         to: 'ur',
       });
-
-      const translatedArray = res.topSelling.map((item, index) => {
+      const topSellingTrans = res.topSelling.map((item, index) => {
         return {
           ...item,
-          productName: result[index],
+          productName: topSellingResult[index],
+        };
+      });
+      const fruitsVegesArr = res.fruitsVeges.map(item => {
+        return item.productName;
+      });
+      const fruitsVegesResult = await translate(fruitsVegesArr, {
+        tld: 'com',
+        to: 'ur',
+      });
+      const fruitsVegesTrans = res.fruitsVeges.map((item, index) => {
+        return {
+          ...item,
+          productName: fruitsVegesResult[index],
         };
       });
 
-      console.log(translatedArray);
+      const exportQualityArr = res.exportQuality.map(item => {
+        return item.productName;
+      });
+      const exportQualityResult = await translate(exportQualityArr, {
+        tld: 'com',
+        to: 'ur',
+      });
+      const exportQualityTrans = res.exportQuality.map((item, index) => {
+        return {
+          ...item,
+          productName: exportQualityResult[index],
+        };
+      });
+      setUrduData([
+        {
+          title: t('topSelling'),
+          data: [topSellingTrans],
+        },
+        {
+          title: t('exportQuality'),
+          data: [exportQualityTrans],
+        },
+        {
+          title: t('fruits&Vegs'),
+          data: [fruitsVegesTrans],
+        },
+      ]);
+      setLoad('');
+      console.log('urduData');
+      console.log(urduData);
     }
-
     setShowActivity(false);
   };
 
