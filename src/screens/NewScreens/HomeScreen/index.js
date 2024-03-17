@@ -12,7 +12,6 @@ import {
 import {Icon} from '@rneui/base';
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'react-redux';
-
 import {Colors, CustomStyles, FontFamily} from '../../../theme/theme';
 
 import styles from './styles';
@@ -133,7 +132,7 @@ const HomeScreen = ({navigation}) => {
       heading2: 'Please wait product data is being fetched from server...',
     });
     handleGetData();
-  }, [isSeller, category, i18n.language]);
+  }, [isSeller, category]);
 
   const handleGetData = () => {
     setShowActivity(true);
@@ -187,6 +186,7 @@ const HomeScreen = ({navigation}) => {
   };
 
   const translatedData = async res => {
+    console.log(res);
     if (isSeller) {
       const array = res.map(item => {
         return item.productName;
@@ -196,12 +196,16 @@ const HomeScreen = ({navigation}) => {
         tld: 'com',
         to: 'ur',
       });
+
+      console.log(result);
       const translatedArray = res.map((item, index) => {
         return {
           ...item,
           productName: result[index],
         };
       });
+
+      console.log(translatedArray);
       setUrduData([
         {
           title: t('newlyAdded'),

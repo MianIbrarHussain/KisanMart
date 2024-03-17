@@ -21,6 +21,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {useDispatch, useSelector} from 'react-redux';
 import socketService from '../../../utils/socketservice';
+import translate from 'translate-google-api';
 
 import {Colors, CustomStyles, FontFamily} from '../../../theme/theme';
 import Button from '../../../components/Button';
@@ -31,6 +32,7 @@ import {
 } from '../../../redux/actions/home';
 import Toast from 'react-native-toast-message';
 import {BaseUrl} from '../../../utils/constans';
+import i18next from 'i18next';
 
 const {width, height} = Dimensions.get('screen');
 const ProductDetail = ({navigation, route}) => {
@@ -173,8 +175,69 @@ const ProductDetail = ({navigation, route}) => {
   };
 
   const onSuccess = res => {
+    if (i18n.language === 'en') {
+      setData(res);
+      setShowLoading('');
+    } else translateData(res);
+  };
+
+  const translateData = async res => {
+    console.log(res);
+    console.log(JSON.parse(res.productDetails.terms));
+
+    const termi = JSON.parse(res.productDetails.terms);
+    console.log(termi);
+    const Category = await translate(res.productDetails.Category, {
+      tld: 'com',
+      to: 'ur',
+    });
+    const description = await translate(res.productDetails.description, {
+      tld: 'com',
+      to: 'ur',
+    });
+    const productName = await translate(res.productDetails.productName, {
+      tld: 'com',
+      to: 'ur',
+    });
+    const region = await translate(res.productDetails.region, {
+      tld: 'com',
+      to: 'ur',
+    });
+    const terms = await translate(termi, {
+      tld: 'com',
+      to: 'ur',
+    });
+    const unit = await translate(res.productDetails.unit, {
+      tld: 'com',
+      to: 'ur',
+    });
+    const city = await translate(res.supplierDetails.city, {
+      tld: 'com',
+      to: 'ur',
+    });
+    const name = await translate(res.supplierDetails.name, {
+      tld: 'com',
+      to: 'ur',
+    });
+    setData({
+      productDetails: {
+        ...res.productDetails,
+        Category: Category[0],
+        description: description[0],
+        productName: productName[0],
+        region: region[0],
+        terms: terms[0],
+        unit: unit[0],
+      },
+      supplierDetails: {
+        ...res.supplierDetails,
+        city: city[0],
+        name: name[0],
+      },
+    });
+    console.log('terms');
+    console.log(terms[0]);
     setShowLoading('');
-    setData(res);
   };
 
   const onError = err => {
@@ -337,11 +400,13 @@ const ProductDetail = ({navigation, route}) => {
           <DetailTabs
             title={t('terms&Condition')}
             value={
-              data?.productDetails?.terms
-                ? JSON.parse(data?.productDetails?.terms)?.map(k => {
-                    return `•\t${k}\n`;
-                  })
-                : ''
+              i18n.language === 'en'
+                ? data?.productDetails?.terms
+                  ? JSON.parse(data?.productDetails?.terms)?.map(k => {
+                      return `•\t${k}\n`;
+                    })
+                  : ''
+                : data?.productDetails?.terms.replace('[ ]', '\n')
             }
           />
         </View>
