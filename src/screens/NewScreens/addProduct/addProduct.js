@@ -515,6 +515,7 @@ const AddProduct = ({navigation}) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   topCont: language => {
     return {

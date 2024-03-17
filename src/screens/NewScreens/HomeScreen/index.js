@@ -19,6 +19,8 @@ import styles from './styles';
 import {handleGetProducts} from '../../../redux/actions/home';
 import Toast from 'react-native-toast-message';
 import {ListingRenderItem} from '../../../components/ListingRenderItem';
+import translate from 'translate-google-api';
+import {CustomActivityIndicator} from '../../../components/CustomActivityIndicator';
 
 const HomeScreen = ({navigation}) => {
   const {t, i18n} = useTranslation();
@@ -27,6 +29,8 @@ const HomeScreen = ({navigation}) => {
   const dispatch = useDispatch();
 
   const [data, setData] = useState('');
+  const [load, setLoad] = useState('');
+  const [urduData, setUrduData] = useState('');
   const [showActivity, setShowActivity] = useState(false);
 
   const categoryData = {
@@ -121,10 +125,15 @@ const HomeScreen = ({navigation}) => {
       />
     );
   };
-
   useEffect(() => {
+    setShowActivity(true);
+
+    setLoad({
+      heading1: 'Fetching data',
+      heading2: 'Please wait product data is being fetched from server...',
+    });
     handleGetData();
-  }, [isSeller, category]);
+  }, [isSeller, category, i18n.language]);
 
   const handleGetData = () => {
     setShowActivity(true);
@@ -138,9 +147,9 @@ const HomeScreen = ({navigation}) => {
       ),
     );
   };
+  const onSuccess = async res => {
+    translatedData(res);
 
-  const onSuccess = res => {
-    setShowActivity(false);
     if (isSeller) {
       setData([
         {
@@ -148,17 +157,10 @@ const HomeScreen = ({navigation}) => {
           data: [res],
         },
       ]);
-      // setData([
-      //   {
-      //     title: t('newlyAdded'),
-      //     data: res.topSelling,
-      //   },
-      //   {
-      //     title: t('myTopSell'),
-      //     data: res.exportQuality,
-      //   },
-      // ]);
+      setShowActivity(false);
     } else {
+      setShowActivity(false);
+
       setData([
         {
           title: t('topSelling'),
@@ -174,8 +176,6 @@ const HomeScreen = ({navigation}) => {
         },
       ]);
     }
-
-    console.log(data);
   };
 
   const onError = err => {
@@ -185,6 +185,57 @@ const HomeScreen = ({navigation}) => {
       text1: 'Connectivity Issue',
       text2: 'Please Check your internet connection...',
     });
+  };
+
+  const translatedData = async res => {
+    console.log(res);
+    console.log(i18n.language);
+
+    if (isSeller) {
+      const array = res.map(item => {
+        return item.productName;
+      });
+      console.log(array);
+      const result = await translate(array, {
+        tld: 'com',
+        to: 'ur',
+      });
+
+      const translatedArray = res.map((item, index) => {
+        return {
+          ...item,
+          productName: result[index],
+        };
+      });
+      setUrduData([
+        {
+          title: t('newlyAdded'),
+          data: [translatedArray],
+        },
+      ]);
+
+      console.log(urduData);
+    } else {
+      const array = res.topSelling.map(item => {
+        return item.productName;
+      });
+      console.log(array);
+      const result = await translate(array, {
+        tld: 'com',
+        to: 'ur',
+      });
+
+      const translatedArray = res.topSelling.map((item, index) => {
+        return {
+          ...item,
+          productName: result[index],
+        };
+      });
+
+      console.log(translatedArray);
+    }
+
+    setShowActivity(false);
   };
 
   return (
@@ -237,7 +288,7 @@ const HomeScreen = ({navigation}) => {
       data[1]?.data.length !== 0 &&
       data[2]?.data.length !== 0 ? (
         <SectionList
-          sections={data}
+          sections={i18n.language === 'en' ? data : urduData}
           style={styles.sectionStyles}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
@@ -290,6 +341,8 @@ const HomeScreen = ({navigation}) => {
           <Icon name="add" size={42} color={'white'} />
         </TouchableOpacity>
       )}
+
+      <CustomActivityIndicator data={load} />
     </View>
   );
 };
