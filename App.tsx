@@ -6,13 +6,14 @@ import Toast from 'react-native-toast-message';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/lib/integration/react';
 import {store, persister} from './src/redux/store';
+import Sample from './src/screens/NewScreens/scan';
 
 const App = () => {
   return (
     <Provider store={store}>
       <PersistGate persistor={persister}>
         <SafeAreaView style={{flex: 1}}>
-          <MainNav />
+          <Sample />
           <Toast />
         </SafeAreaView>
       </PersistGate>

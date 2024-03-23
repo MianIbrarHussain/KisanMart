@@ -21,6 +21,7 @@
     "@rneui/base": "^0.0.0-edge.2",
     "@rneui/themed": "^0.0.0-edge.2",
     "axios": "^1.6.4",
+    "blinkid-react-native": "^6.5.0",
     "i18next": "^23.6.0",
     "qs": "^6.11.2",
     "react": "18.2.0",
