@@ -135,16 +135,23 @@ function CustomDrawerContent(props) {
           leftTag={t('buyer')}
           RightTag={t('seller')}
           onPress={() => {
-            if (userData.isVerified) {
-              dispatch(toggleMode());
-            } else {
-              props.navigation.navigate('AuthStack', {
-                screen: 'CreateProfile',
-                params: {
-                  userID: userData.userID,
-                },
-              });
-            }
+            dispatch(toggleMode());
+            // props.navigation.navigate('AuthStack', {
+            //   screen: 'CreateProfile',
+            //   params: {
+            //     userID: userData.userID,
+            //   },
+            // });
+            // if (userData.isVerified) {
+            //   dispatch(toggleMode());
+            // } else {
+            //   props.navigation.navigate('AuthStack', {
+            //     screen: 'CreateProfile',
+            //     params: {
+            //       userID: userData.userID,
+            //     },
+            //   });
+            // }
           }}
         />
       </View>

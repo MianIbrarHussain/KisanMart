@@ -250,32 +250,49 @@ const ProductDetail = ({navigation, route}) => {
   };
 
   const handleChat = () => {
-    if (userData.isVerified) {
-      setShowLoading({
-        heading1: 'Please Wait!',
-        heading2: 'Creating chat room...',
-      });
-      const qs = require('qs');
-      let sendingData = qs.stringify({
-        userID: userData.userID,
-        recipientID: data.supplierDetails.supplierID,
-      });
-      dispatch(handleCreateChatRoom(sendingData, onSuccessChat, onErrorChat));
-      // navigation.navigate('ChatScreen', {
-      //   item: {
-      //     _id: 1,
-      //     name: t('noman'),
-      //     avatar: require('../../../assets/images/profile.jpeg'),
-      //   },
-      // });
-    } else {
-      navigation.navigate('AuthStack', {
-        screen: 'CreateProfile',
-        params: {
-          userID: userData.userID,
-        },
-      });
-    }
+    setShowLoading({
+      heading1: 'Please Wait!',
+      heading2: 'Creating chat room...',
+    });
+    const qs = require('qs');
+    let sendingData = qs.stringify({
+      userID: userData.userID,
+      recipientID: data.supplierDetails.supplierID,
+    });
+    dispatch(handleCreateChatRoom(sendingData, onSuccessChat, onErrorChat));
+    // navigation.navigate('ChatScreen', {
+    //   item: {
+    //     _id: 1,
+    //     name: t('noman'),
+    //     avatar: require('../../../assets/images/profile.jpeg'),
+    //   },
+    // });
+    // if (userData.isVerified) {
+    //   setShowLoading({
+    //     heading1: 'Please Wait!',
+    //     heading2: 'Creating chat room...',
+    //   });
+    //   const qs = require('qs');
+    //   let sendingData = qs.stringify({
+    //     userID: userData.userID,
+    //     recipientID: data.supplierDetails.supplierID,
+    //   });
+    //   dispatch(handleCreateChatRoom(sendingData, onSuccessChat, onErrorChat));
+    //   // navigation.navigate('ChatScreen', {
+    //   //   item: {
+    //   //     _id: 1,
+    //   //     name: t('noman'),
+    //   //     avatar: require('../../../assets/images/profile.jpeg'),
+    //   //   },
+    //   // });
+    // } else {
+    //   navigation.navigate('AuthStack', {
+    //     screen: 'CreateProfile',
+    //     params: {
+    //       userID: userData.userID,
+    //     },
+    //   });
+    // }
   };
 
   const onSuccessChat = (res, status) => {

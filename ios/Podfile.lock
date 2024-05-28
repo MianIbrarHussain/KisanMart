@@ -1,4 +1,7 @@
 PODS:
+  - blinkid-react-native (6.5.0):
+    - PPBlinkID (~> 6.5.0)
+    - React
   - boost (1.76.0)
   - CocoaAsyncSocket (7.6.5)
   - DoubleConversion (1.1.6)
@@ -144,6 +147,7 @@ PODS:
   - nanopb/decode (2.30909.1)
   - nanopb/encode (2.30909.1)
   - OpenSSL-Universal (1.1.1100)
+  - PPBlinkID (6.5.1)
   - PromisesObjC (2.3.1)
   - RCT-Folly (2021.07.22.00):
     - boost
@@ -646,6 +650,7 @@ PODS:
     - Yoga (~> 1.14)
 
 DEPENDENCIES:
+  - blinkid-react-native (from `../node_modules/blinkid-react-native`)
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -753,12 +758,15 @@ SPEC REPOS:
     - MLKitVision
     - nanopb
     - OpenSSL-Universal
+    - PPBlinkID
     - PromisesObjC
     - SocketRocket
     - TOCropViewController
     - YogaKit
 
 EXTERNAL SOURCES:
+  blinkid-react-native:
+    :path: "../node_modules/blinkid-react-native"
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   DoubleConversion:
@@ -864,6 +872,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  blinkid-react-native: ccaa98418fe6a8ede627e718be1e6de092d24daa
   boost: 57d2868c099736d80fcd648bf211b4431e51a558
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
@@ -896,6 +905,7 @@ SPEC CHECKSUMS:
   MLKitVision: 8baa5f46ee3352614169b85250574fde38c36f49
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
+  PPBlinkID: 477b80cde311d7c394f2dbe388eb80f955bedd21
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: 28469809442eb4eb5528462705f7d852948c8a74
@@ -946,6 +956,6 @@ SPEC CHECKSUMS:
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: cfbc5a7423278b0c52425925cf88d33a448dc6ff
+PODFILE CHECKSUM: 88bfad4e66e2662472ee2c4042ec9ce8207f568f
 
 COCOAPODS: 1.14.3

@@ -352,6 +352,8 @@ export default class Sample extends Component {
             </View>,
           )}
         </ScrollView>
+
+        <Button />
       </View>
     );
   }

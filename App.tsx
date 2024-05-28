@@ -13,7 +13,7 @@ const App = () => {
     <Provider store={store}>
       <PersistGate persistor={persister}>
         <SafeAreaView style={{flex: 1}}>
-          <Sample />
+          <MainNav />
           <Toast />
         </SafeAreaView>
       </PersistGate>

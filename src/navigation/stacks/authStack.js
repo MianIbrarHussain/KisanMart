@@ -8,6 +8,7 @@ import ForgetPassword from '../../screens/auth/forgetPassword/forgetPassword';
 import CreateProfile from '../../screens/auth/createProfile/createProfile';
 import IDscan from '../../screens/auth/IDscan/IDscan';
 import Scan from '../../screens/auth/scan/scan';
+import Sample from '../../screens/NewScreens/scan';
 
 const AuthStack = () => {
   const Stack = createNativeStackNavigator();
@@ -24,7 +25,7 @@ const AuthStack = () => {
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="CreateProfile" component={CreateProfile} />
       <Stack.Screen name="IDscan" component={IDscan} />
-      <Stack.Screen name="Scan" component={Scan} />
+      <Stack.Screen name="Scan" component={Sample} />
     </Stack.Navigator>
   );
 };

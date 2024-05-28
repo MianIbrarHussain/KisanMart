@@ -239,6 +239,7 @@ const ChatScreen = ({route, navigation}) => {
   };
 
   const onSuccess = res => {
+    console.log(res);
     setSupplierProducts(res);
   };
 

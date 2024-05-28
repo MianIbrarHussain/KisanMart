@@ -225,12 +225,12 @@ const CreateProfile = ({navigation, route}) => {
           value={whatsAppNumber}
           onChangeText={setWhatsAppNumber}
         />
-        <InputField
+        {/* <InputField
           placeholder={t('verifyCard')}
           style={{marginTop: 10}}
           value={idCardNumber}
           onChangeText={setIDCardNumber}
-        />
+        /> */}
         {/* <TouchableOpacity
           style={{
             flexDirection: i18n.language === 'en' ? 'row' : 'row-reverse',
@@ -260,7 +260,17 @@ const CreateProfile = ({navigation, route}) => {
             color={Colors.primary}
           />
         </TouchableOpacity>
-
+        <Button
+          backgroundColor={Colors.primary}
+          borderColor={Colors.primary}
+          round={50}
+          style={{marginTop: 30}}
+          title={t('verifyCard')}
+          titleColor={'white'}
+          onPress={() => {
+            navigation.navigate('Scan');
+          }}
+        />
         <Button
           backgroundColor={Colors.primary}
           borderColor={Colors.primary}

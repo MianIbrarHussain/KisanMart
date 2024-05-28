@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import * as BlinkIDReactNative from 'blinkid-react-native';
 import {
   AppRegistry,
@@ -10,13 +10,15 @@ import {
   ScrollView,
   Button,
 } from 'react-native';
+import InputField from '../../components/InputField';
+import {Colors} from '../../theme/theme';
 
 const licenseKey = Platform.select({
   // iOS license key for applicationID: com.microblink.sample
   ios: 'sRwCABVjb20ubWljcm9ibGluay5zYW1wbGUBbGV5SkRjbVZoZEdWa1QyNGlPakUzTURnd09EUTFNamM1TnpJc0lrTnlaV0YwWldSR2IzSWlPaUkwT1RabFpEQXpaUzAwT0RBeExUUXpZV1F0WVRrMU5DMDBNemMyWlRObU9UTTVNR1FpZlE9PTYmqMAMVMiFzaNDv15W9/CxDFVRDWRjok+uP0GtswDV4XTVGmhbivKDEb9Gtk2iMzf29qFWF8aUjIES4QSQFJG0xfBXZhluSk7lt4A959aHAZ0+BWgDnqZUPJAF2jZd0Pl2Kt1oDxLtqtf8V/RR+dPYzUV0PEA=',
   // android license key for applicationID: com.microblink.sample
   android:
-    'sRwCAA1jb20ua2lzYW5tYXJ0AGxleUpEY21WaGRHVmtUMjRpT2pFM01UQTRORGN6TVRJd09EVXNJa055WldGMFpXUkdiM0lpT2lJME5XRmhNRFV4TVMweU9HTXlMVFE1TURNdE9UTXhZeTAyTkRnd1lqQmpPREUxWW1RaWZRPT393kUXX20A/OW7AGp9xFCzlbVOJ1gK04l3WGix8uKzc11AAMi/NgJPTaU7UVh0qUZI/nyXy5uj/AXJ0Mj7llIPDxq4hx1/9De/aUIsEQrab+rHb/ucW3QMYMPouh9twbcRy1PxSSzsZ2a7JM5jIFlR8VzKfx27',
+    'sRwCAA1jb20ua2lzYW5tYXJ0AGxleUpEY21WaGRHVmtUMjRpT2pFM01UUTVNVGM0TWpFNU1UY3NJa055WldGMFpXUkdiM0lpT2lJME5XRmhNRFV4TVMweU9HTXlMVFE1TURNdE9UTXhZeTAyTkRnd1lqQmpPREUxWW1RaWZRPT3Ojt23zpBzvVR8YG6OUUhvS3sAwOZNYTYbpFcsrpI+tXmes7Lz9poSHJ7M+gHP0dN/6XrY80k5CPTJnE/lsvjCO5sNEkUXdPkDzGDrFN9Joj7L0H9QxWxCh34lg1tzUZoj2KwRTYiO0MXY7DJ7QshOr10U13az',
 });
 
 var renderIf = function (condition, content) {
@@ -50,25 +52,19 @@ function buildDateResult(result, key) {
   return '';
 }
 
-export default class Sample extends Component {
-  constructor(props) {
-    super(props);
+const Sample = () => {
+  const [showFrontImageDocument, setShowFrontImageDocument] = useState(false);
+  const [resultFrontImageDocument, setResultFrontImageDocument] = useState('');
+  const [showBackImageDocument, setShowBackImageDocument] = useState(false);
+  const [resultBackImageDocument, setResultBackImageDocument] = useState('');
+  const [showImageFace, setShowImageFace] = useState(false);
+  const [resultImageFace, setResultImageFace] = useState('');
+  const [showSuccessFrame, setShowSuccessFrame] = useState(false);
+  const [successFrame, setSuccessFrame] = useState('');
+  const [results, setResults] = useState('');
+  const [result, setResult] = useState('');
 
-    this.state = {
-      showFrontImageDocument: false,
-      resultFrontImageDocument: '',
-      showBackImageDocument: false,
-      resultBackImageDocument: '',
-      showImageFace: false,
-      resultImageFace: '',
-      showSuccessFrame: false,
-      successFrame: '',
-      results: '',
-      licenseKeyErrorMessage: '',
-    };
-  }
-
-  async scan() {
+  const scan = async () => {
     try {
       // to scan any machine readable travel document (passports, visas and IDs with
       // machine readable zone), use MrtdRecognizer
@@ -93,65 +89,70 @@ export default class Sample extends Component {
       );
 
       if (scanningResults) {
-        let newState = {
-          showFrontImageDocument: false,
-          resultFrontImageDocument: '',
-          showBackImageDocument: false,
-          resultBackImageDocument: '',
-          showImageFace: false,
-          resultImageFace: '',
-          results: '',
-          showSuccessFrame: false,
-          successFrame: '',
-        };
+        setShowFrontImageDocument(false);
+        setResultFrontImageDocument('');
+        setShowBackImageDocument(false);
+        setResultBackImageDocument('');
+        setShowImageFace(false);
+        setResultImageFace('');
+        setResults('');
+        setShowImageFace(false);
+        setSuccessFrame('');
+        // let newState = {
+        //   showFrontImageDocument: false,
+        //   resultFrontImageDocument: '',
+        //   showBackImageDocument: false,
+        //   resultBackImageDocument: '',
+        //   showImageFace: false,
+        //   resultImageFace: '',
+        //   results: '',
+        //   showSuccessFrame: false,
+        //   successFrame: '',
+        // };
 
         for (let i = 0; i < scanningResults.length; ++i) {
-          let localState = this.handleResult(scanningResults[i]);
-          newState.showFrontImageDocument =
-            newState.showFrontImageDocument ||
-            localState.showFrontImageDocument;
+          let localState = handleResult(scanningResults[i]);
+          setShowFrontImageDocument(
+            showFrontImageDocument || localState.showFrontImageDocument,
+          );
           if (localState.showFrontImageDocument) {
-            newState.resultFrontImageDocument =
-              localState.resultFrontImageDocument;
+            setResultFrontImageDocument(localState.resultFrontImageDocument);
           }
-          newState.showBackImageDocument =
-            newState.showBackImageDocument || localState.showBackImageDocument;
+          setShowBackImageDocument(
+            showBackImageDocument || localState.showBackImageDocument,
+          );
           if (localState.showBackImageDocument) {
-            newState.resultBackImageDocument =
-              localState.resultBackImageDocument;
+            setResultBackImageDocument(localState.resultBackImageDocument);
           }
-          newState.showImageFace =
-            newState.showImageFace || localState.showImageFace;
+          setShowImageFace(showImageFace || localState.showImageFace);
           if (localState.resultImageFace) {
-            newState.resultImageFace = localState.resultImageFace;
+            setResultImageFace(localState.resultImageFace);
           }
-          newState.results += localState.results;
-          newState.showSuccessFrame =
-            newState.showSuccessFrame || localState.showSuccessFrame;
+          setResults(results + localState.results);
+          setShowSuccessFrame(showSuccessFrame || localState.showSuccessFrame);
           if (localState.successFrame) {
-            newState.successFrame = localState.successFrame;
+            setSuccessFrame(localState.successFrame);
           }
         }
-        newState.results += '\n';
-        this.setState(newState);
+        setResults(results + '\n');
       }
     } catch (error) {
       console.log(error);
-      this.setState({
-        showFrontImageDocument: false,
-        resultFrontImageDocument: '',
-        showBackImageDocument: false,
-        resultBackImageDocument: '',
-        showImageFace: false,
-        resultImageFace: '',
-        results: 'Scanning has been cancelled',
-        showSuccessFrame: false,
-        successFrame: '',
-      });
-    }
-  }
 
-  handleResult(result) {
+      setShowFrontImageDocument(false);
+      setResultFrontImageDocument('');
+      setShowBackImageDocument(false);
+      setResultBackImageDocument('');
+      setShowImageFace(false);
+      setResultImageFace('');
+      setResults('Scanning has been cancelled');
+      setShowImageFace(false);
+      setSuccessFrame('');
+    }
+  };
+  console.log('result');
+  console.log(result);
+  function handleResult(result) {
     var localState = {
       showFrontImageDocument: false,
       resultFrontImageDocument: '',
@@ -165,6 +166,54 @@ export default class Sample extends Component {
 
     if (result instanceof BlinkIDReactNative.BlinkIdMultiSideRecognizerResult) {
       let blinkIdResult = result;
+      console.log('blinkIdResult');
+      console.log(blinkIdResult);
+      const infoArr = {
+        firstName: blinkIdResult.firstName.description,
+        lastName: blinkIdResult.lastName.description,
+        fullName: blinkIdResult.fullName.description,
+        localizedName: blinkIdResult.localizedName.description,
+        fatherName: blinkIdResult.additionalNameInformation.description,
+        address: blinkIdResult.address.description,
+        additionalAddressInfo:
+          blinkIdResult.additionalAddressInformation.description,
+        documentNumber: blinkIdResult.documentNumber.description,
+        additionalDocumentNumber:
+          blinkIdResult.documentAdditionalNumber.description,
+        sex: blinkIdResult.sex.description,
+        issuingAuthority: blinkIdResult.issuingAuthority.description,
+        nationality: blinkIdResult.nationality.description,
+        dateOfBirth:
+          blinkIdResult.dateOfBirth.originalDateStringResult.description,
+        age: blinkIdResult.age,
+        dateOfIssue:
+          blinkIdResult.dateOfIssue.originalDateStringResult.description,
+        dateOfExpiry:
+          blinkIdResult.dateOfExpiry.originalDateStringResult.description,
+        dateOfExpiryPermanent: blinkIdResult.dateOfExpiryPermanent,
+        expired: blinkIdResult.expired,
+        martialStatus: blinkIdResult.maritalStatus.description,
+        personalIdNumber: blinkIdResult.personalIdNumber.description,
+        profession: blinkIdResult.profession.description,
+        race: blinkIdResult.race.description,
+        religion: blinkIdResult.religion.description,
+        residentialStatus: blinkIdResult.residentialStatus.description,
+        processingStatus: blinkIdResult.processingStatus.description,
+        recognitionMode: blinkIdResult.recognitionMode.description,
+
+        // let dataMatchResult = blinkIdResult.dataMatch;
+        // resultString +=
+
+        //     dataMatchResult.stateForWholeDocument,
+        //     'State for the whole document',
+        //   ) +
+        //     dataMatchResult.states[0].state, 'dateOfBirth') +
+        //  dataMatchResult.states[1].state, 'dateOfExpiry') +
+        // dataMatchResult.states[2].state, 'documentNumber');
+      };
+      console.log('infoArr');
+      console.log(infoArr);
+      setResult(infoArr);
 
       let resultString =
         buildResult(blinkIdResult.firstName.description, 'First name') +
@@ -288,69 +337,111 @@ export default class Sample extends Component {
     }
     return localState;
   }
+  useEffect(() => {
+    scan();
+  }, []);
 
-  render() {
-    let displayFrontImageDocument = this.state.resultFrontImageDocument;
-    let displayBackImageDocument = this.state.resultBackImageDocument;
-    let displayImageFace = this.state.resultImageFace;
-    let displaySuccessFrame = this.state.successFrame;
-    let displayFields = this.state.results;
+  const Fields = ({title, value}) => {
     return (
-      <View style={styles.container}>
-        <View style={styles.buttonContainer}>
-          <Button onPress={this.scan.bind(this)} title="Scan" color="#48B2E8" />
-        </View>
-        <ScrollView
-          automaticallyAdjustContentInsets={false}
-          scrollEventThrottle={200}
-          y>
-          <Text style={styles.results}>{displayFields}</Text>
-          {renderIf(
-            this.state.showFrontImageDocument,
-            <View style={styles.imageContainer}>
-              <Image
-                resizeMode="contain"
-                source={{uri: displayFrontImageDocument, scale: 3}}
-                style={styles.imageResult}
-              />
-            </View>,
-          )}
-          {renderIf(
-            this.state.showBackImageDocument,
-            <View style={styles.imageContainer}>
-              <Image
-                resizeMode="contain"
-                source={{uri: displayBackImageDocument, scale: 3}}
-                style={styles.imageResult}
-              />
-            </View>,
-          )}
-          {renderIf(
-            this.state.showImageFace,
-            <View style={styles.imageContainer}>
-              <Image
-                resizeMode="contain"
-                source={{uri: displayImageFace, scale: 3}}
-                style={styles.imageResult}
-              />
-            </View>,
-          )}
-          {renderIf(
-            this.state.showSuccessFrame,
-            <View style={styles.imageContainer}>
-              <Image
-                resizeMode="contain"
-                source={{uri: displaySuccessFrame, scale: 3}}
-                style={styles.imageResult}
-              />
-            </View>,
-          )}
-        </ScrollView>
+      <View style={{width: '90%', alignSelf: 'center', marginTop: 10}}>
+        <Text style={{fontWeight: 'bold', color: 'black'}}>{title}</Text>
+        <InputField
+          placeholder={result.fullName}
+          style={{marginVertical: 10, borderRadius: 10}}
+          width="100%"
+          value={value}
+        />
       </View>
     );
-  }
-}
+  };
+  // let displayFrontImageDocument = this.state.resultFrontImageDocument;
+  // let displayBackImageDocument = this.state.resultFrontImageDocument;
+  // let displayImageFace = this.state.resultImageFace;
+  // let displaySuccessFrame = this.state.successFrame;
+  // let displayFields = this.state.results;
+  return (
+    <View style={styles.container}>
+      <View style={styles.buttonContainer}>
+        <Button onPress={scan} title="Scan again" color={Colors.primary} />
+      </View>
+      <ScrollView
+        automaticallyAdjustContentInsets={false}
+        scrollEventThrottle={200}>
+        {renderIf(
+          showImageFace,
+          <View
+            style={{
+              width: 150,
+              height: 150,
+              borderRadius: 100,
+              alignSelf: 'center',
+              marginVertical: 15,
+            }}>
+            <Image
+              resizeMode="contain"
+              source={{uri: resultImageFace, scale: 3}}
+              style={{width: '100%', height: '100%', borderRadius: 100}}
+            />
+          </View>,
+        )}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: '90%',
+            alignSelf: 'center',
+            marginBottom: 15,
+          }}>
+          {renderIf(
+            showFrontImageDocument,
+            <View style={styles.imageContainer}>
+              <Image
+                resizeMode="contain"
+                source={{uri: resultFrontImageDocument, scale: 3}}
+                style={styles.imageResult}
+              />
+            </View>,
+          )}
+          {renderIf(
+            showBackImageDocument,
+            <View style={styles.imageContainer}>
+              <Image
+                resizeMode="contain"
+                source={{uri: resultBackImageDocument, scale: 3}}
+                style={styles.imageResult}
+              />
+            </View>,
+          )}
+        </View>
+        {renderIf(
+          result,
+          <View>
+            <Fields title="Full Name" value={result.fullName} />
+            <Fields title="Father Name" value={result.fatherName} />
+            <Fields title="CNIC" value={result.personalIdNumber} />
+            <Fields title="Gender" value={result.sex} />
+            <Fields title="Date of birth" value={result.dateOfBirth} />
+            <Fields title="Age" value={result.age?.toString()} />
+            <Fields title="Date Of Issue" value={result.dateOfIssue} />
+            <Fields title="Date Of Expiry" value={result.dateOfExpiry} />
+            <Fields title="Valid" value={result.expired ? 'Yes' : 'No'} />
+          </View>,
+        )}
 
+        {renderIf(
+          showSuccessFrame,
+          <View style={styles.imageContainer}>
+            <Image
+              resizeMode="contain"
+              source={{uri: successFrame, scale: 3}}
+              style={styles.imageResult}
+            />
+          </View>,
+        )}
+      </ScrollView>
+    </View>
+  );
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -370,6 +461,14 @@ const styles = StyleSheet.create({
   imageContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
+    borderWidth: 0.5,
+    alignSelf: 'center',
+    borderRadius: 10,
+    marginTop: 10,
+    width: '48%',
+    height: 125,
+    alignItems: 'center',
+    borderColor: 'grey',
   },
   results: {
     fontSize: 16,
@@ -377,11 +476,11 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   imageResult: {
-    flex: 1,
-    flexShrink: 1,
-    height: 200,
+    height: '95%',
+    width: '90%',
     alignItems: 'center',
     justifyContent: 'center',
     margin: 10,
   },
 });
+export default Sample;

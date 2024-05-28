@@ -39,7 +39,7 @@ export const CustomStyles = {
     fontFamily: 'Poppins-Bold',
   },
   heading3: {
-    fontSize: getFontSize(18),
+    fontSize: getFontSize(16),
     color: '#181B18',
     fontFamily: 'Poppins-SemiBold',
   },
@@ -54,7 +54,7 @@ export const CustomStyles = {
     fontFamily: 'Poppins-Medium',
   },
   subTitle: {
-    fontSize: getFontSize(16),
+    fontSize: getFontSize(14),
     color: '#181B18',
     fontFamily: 'Poppins-Regular',
   },

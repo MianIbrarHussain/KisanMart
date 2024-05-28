@@ -49,7 +49,7 @@ const InputField = ({
           width: eye ? '85%' : '95%',
           alignSelf: 'center',
           textAlign: i18n.language === 'en' ? 'left' : 'right',
-          textAlignVertical: 'top',
+          // textAlignVertical: 'top',
           height: '100%',
           color: 'black',
         }}

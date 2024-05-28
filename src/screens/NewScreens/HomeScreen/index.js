@@ -147,7 +147,8 @@ const HomeScreen = ({navigation}) => {
     );
   };
   const onSuccess = async res => {
-    translatedData(res);
+    // translatedData(res);
+    setLoad('');
 
     if (isSeller) {
       setData([
@@ -187,6 +188,7 @@ const HomeScreen = ({navigation}) => {
 
   const translatedData = async res => {
     console.log(res);
+
     if (isSeller) {
       const array = res.map(item => {
         return item.productName;
