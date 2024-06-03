@@ -18,6 +18,7 @@ const InputField = ({
   onChangeText,
   width = '90%',
   value,
+  editable = true,
 }) => {
   const {t, i18n} = useTranslation();
 
@@ -43,6 +44,7 @@ const InputField = ({
         onEndEditing={onEndEditing}
         keyboardType={keyboardType}
         onChangeText={onChangeText}
+        editable={editable}
         value={value}
         placeholderTextColor={Colors.complimantory}
         style={{

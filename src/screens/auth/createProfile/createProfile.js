@@ -1,4 +1,4 @@
-import React, {useState, useRef, useDebugValue} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
   View,
@@ -22,6 +22,7 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import Toast from 'react-native-toast-message';
 import {userVerification} from '../../../redux/actions/auth';
 import {CustomActivityIndicator} from '../../../components/CustomActivityIndicator';
+import Sample from '../../NewScreens/scan';
 
 const pakistanCities = [
   'Karachi',
@@ -89,36 +90,17 @@ const CreateProfile = ({navigation, route}) => {
 
   const width = useWindowDimensions().width;
   const [loading, setLoading] = useState('');
+  const [cardData, setCardData] = useState({});
 
   //FormData
-  const [userImage, setUserImage] = useState({
-    uri: '',
-  });
-  const [userName, setUserName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [whatsAppNumber, setWhatsAppNumber] = useState('');
-  const [idCardNumber, setIDCardNumber] = useState('');
   const [region, setRegion] = useState('');
-
-  const gallery = () => {
-    ImageCropPicker.openPicker({
-      multiple: false,
-    }).then(k => {
-      setUserImage({
-        name: k.path.split('/').pop(),
-        type: k.mime,
-        uri: k.path,
-      });
-    });
-  };
 
   const handleValidation = () => {
     if (
-      userImage.uri === '' ||
-      userName.length === 0 ||
       phoneNumber.length === 0 ||
       whatsAppNumber.length === 0 ||
-      idCardNumber.length === 0 ||
       region.length === 0
     ) {
       Toast.show({
@@ -133,16 +115,20 @@ const CreateProfile = ({navigation, route}) => {
       });
       const FormData = require('form-data');
       let data = new FormData();
-      data.append('name', userName);
+      data.append('name', cardData?.fullName);
+      data.append('cnic', cardData?.personalIdNumber);
+
       data.append('phone', phoneNumber);
       data.append('whatsapp', whatsAppNumber);
       data.append('city', region);
-      data.append('profilePicture', {
-        name: userImage.name,
-        uri: userImage.uri,
-        type: userImage.type,
-      });
-      data.append('cnic', idCardNumber);
+      // data.append('profilePicture', {
+      //   name: userImage.name,
+      //   uri: userImage.uri,
+      //   type: userImage.type,
+      // });
+      data.append('profilePicture', cardData.resultImageFace);
+      data.append('cnicFront', cardData.resultFrontImageDocument);
+      data.append('cnicBack', cardData.resultBackImageDocument);
       data.append('userID', userID);
       dispatch(
         userVerification(data, onSuccessVerification, onErrorVerification),
@@ -169,12 +155,20 @@ const CreateProfile = ({navigation, route}) => {
     });
   };
 
-  return (
-    <ScrollView
-      style={{
-        flex: 1,
-      }}>
-      <View style={{flex: 1, backgroundColor: 'white'}}>
+  useEffect(() => {
+    console.log('sdfsdfsdfsddfsdfsdfsdf');
+    console.log(cardData);
+    console.log('sdfsfsfsdfsdfsfsdfsdfsdf');
+  }, [cardData]);
+
+  if (Object.keys(cardData).length === 0)
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          justifyContent: 'center',
+        }}>
         {loggedIn === false && (
           <Text
             style={styles.skip}
@@ -186,101 +180,149 @@ const CreateProfile = ({navigation, route}) => {
         )}
         <Text style={styles.welcome}>{t('welcome')}</Text>
         <Text style={styles.complete}>{t('completeProfile')}</Text>
-        <View style={{marginTop: 20}}>
-          <TouchableOpacity style={styles.imageWrap} onPress={gallery}>
-            <Image
-              source={
-                userImage.uri === ''
-                  ? require('../../../assets/images/placeholder.png')
-                  : {uri: userImage.uri}
-              }
-              style={[
-                styles.placeholder,
-                userImage.uri !== '' && {
-                  width: '100%',
-                  height: '100%',
-                  resizeMode: 'cover',
-                  borderRadius: 100,
-                },
-              ]}
-            />
-          </TouchableOpacity>
-          <Text style={styles.uploadPic}>{t('uploadPic')}</Text>
+        <View
+          style={{
+            width: '90%',
+            alignSelf: 'center',
+            marginTop: 20,
+          }}>
+          <Sample data={cardData} setData={setCardData} />
         </View>
-        <InputField
-          placeholder={t('enterName')}
-          style={{marginTop: 30}}
-          value={userName}
-          onChangeText={setUserName}
-        />
-        <InputField
-          placeholder={t('number')}
-          style={{marginTop: 10}}
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-        />
-        <InputField
-          placeholder={t('whatappNum')}
-          style={{marginTop: 10}}
-          value={whatsAppNumber}
-          onChangeText={setWhatsAppNumber}
-        />
-        {/* <InputField
-          placeholder={t('verifyCard')}
-          style={{marginTop: 10}}
-          value={idCardNumber}
-          onChangeText={setIDCardNumber}
-        /> */}
-        {/* <TouchableOpacity
-          style={{
-            flexDirection: i18n.language === 'en' ? 'row' : 'row-reverse',
-            ...styles.cardButton,
+      </View>
+    );
+
+  return (
+    <ScrollView
+      style={{
+        flex: 1,
+        backgroundColor: 'white',
+      }}>
+      {loggedIn === false && (
+        <Text
+          style={styles.skip}
+          onPress={() => {
+            navigation.navigate('Login');
           }}>
-          <Text style={{color: Colors.complimantory}}>{t('verifyCard')}</Text>
-          <Icon
-            name="caretright"
-            type="ant-design"
-            size={16}
-            color={Colors.primary}
-          />
-        </TouchableOpacity> */}
-        <TouchableOpacity
-          onPress={() => regionPicker.current.open()}
-          style={{
-            flexDirection: i18n.language === 'en' ? 'row' : 'row-reverse',
-            ...styles.cardButton,
-          }}>
-          <Text style={{color: region === '' ? Colors.complimantory : 'black'}}>
-            {region === '' ? t('selectRegion') : region}
-          </Text>
-          <Icon
-            name="caretdown"
-            type="ant-design"
-            size={16}
-            color={Colors.primary}
+          {t('skip')}
+        </Text>
+      )}
+      <Text style={styles.welcome}>{t('welcome')}</Text>
+      <Text style={styles.complete}>{t('completeProfile')}</Text>
+      <View style={{marginTop: 20}}>
+        <TouchableOpacity activeOpacity={1} style={styles.imageWrap}>
+          <Image
+            source={
+              cardData?.resultImageFace
+                ? {uri: cardData.resultImageFace}
+                : require('../../../assets/images/placeholder.png')
+            }
+            style={[
+              styles.placeholder,
+              cardData?.resultImageFace && {
+                width: '100%',
+                height: '100%',
+                resizeMode: 'cover',
+                borderRadius: 100,
+              },
+            ]}
           />
         </TouchableOpacity>
-        <Button
-          backgroundColor={Colors.primary}
-          borderColor={Colors.primary}
-          round={50}
-          style={{marginTop: 30}}
-          title={t('verifyCard')}
-          titleColor={'white'}
-          onPress={() => {
-            navigation.navigate('Scan');
-          }}
-        />
-        <Button
-          backgroundColor={Colors.primary}
-          borderColor={Colors.primary}
-          round={50}
-          style={{marginTop: 30}}
-          title={t('next')}
-          titleColor={'white'}
-          onPress={handleValidation}
-        />
       </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-evenly',
+          marginTop: 20,
+        }}>
+        <View
+          style={{
+            borderWidth: 1,
+            borderColor: 'grey',
+            width: '40%',
+            height: 100,
+          }}>
+          <Image
+            source={{
+              uri: cardData?.resultFrontImageDocument,
+            }}
+            style={{
+              width: '100%',
+              height: '100%',
+              resizeMode: 'contain',
+            }}
+          />
+        </View>
+        <View
+          style={{
+            borderWidth: 1,
+            borderColor: 'grey',
+            width: '40%',
+            height: 100,
+          }}>
+          <Image
+            source={{
+              uri: cardData?.resultBackImageDocument,
+            }}
+            style={{
+              width: '100%',
+              height: '100%',
+              resizeMode: 'contain',
+            }}
+          />
+        </View>
+      </View>
+      <InputField
+        placeholder={t('enterName')}
+        style={{marginTop: 30}}
+        value={cardData?.fullName}
+        editable={false}
+      />
+      <InputField
+        placeholder={t('verifyCard')}
+        style={{marginTop: 10}}
+        value={cardData?.personalIdNumber}
+        editable={false}
+      />
+      <InputField
+        placeholder={t('number')}
+        style={{marginTop: 10}}
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
+      />
+      <InputField
+        placeholder={t('whatappNum')}
+        style={{marginTop: 10}}
+        value={whatsAppNumber}
+        onChangeText={setWhatsAppNumber}
+      />
+
+      <TouchableOpacity
+        onPress={() => regionPicker.current.open()}
+        style={{
+          flexDirection: i18n.language === 'en' ? 'row' : 'row-reverse',
+          ...styles.cardButton,
+        }}>
+        <Text style={{color: region === '' ? Colors.complimantory : 'black'}}>
+          {region === '' ? t('selectRegion') : region}
+        </Text>
+        <Icon
+          name="caretdown"
+          type="ant-design"
+          size={16}
+          color={Colors.primary}
+        />
+      </TouchableOpacity>
+      <Button
+        backgroundColor={Colors.primary}
+        borderColor={Colors.primary}
+        round={50}
+        style={{marginTop: 30}}
+        title={t('next')}
+        titleColor={'white'}
+        onPress={handleValidation}
+      />
+
       <RBSheet
         ref={regionPicker}
         customStyles={{

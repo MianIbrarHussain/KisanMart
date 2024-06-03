@@ -124,37 +124,59 @@ function CustomDrawerContent(props) {
         />
       </View>
       <View style={styles.line} />
-      <View
-        style={[
-          {flexDirection: i18n.language === 'en' ? 'row' : 'row-reverse'},
-          styles.switchWrapper,
-        ]}>
-        <Text style={styles.switchTitle}>{t('switchToSelling')}</Text>
-        <BuyerSellerSwitch
-          type="mode"
-          leftTag={t('buyer')}
-          RightTag={t('seller')}
-          onPress={() => {
-            dispatch(toggleMode());
-            // props.navigation.navigate('AuthStack', {
-            //   screen: 'CreateProfile',
-            //   params: {
-            //     userID: userData.userID,
-            //   },
-            // });
-            // if (userData.isVerified) {
-            //   dispatch(toggleMode());
-            // } else {
-            //   props.navigation.navigate('AuthStack', {
-            //     screen: 'CreateProfile',
-            //     params: {
-            //       userID: userData.userID,
-            //     },
-            //   });
-            // }
-          }}
-        />
-      </View>
+      {userData.isVerified ? (
+        <View
+          style={[
+            {flexDirection: i18n.language === 'en' ? 'row' : 'row-reverse'},
+            styles.switchWrapper,
+          ]}>
+          <Text style={styles.switchTitle}>{t('switchToSelling')}</Text>
+          <BuyerSellerSwitch
+            type="mode"
+            leftTag={t('buyer')}
+            RightTag={t('seller')}
+            onPress={() => {
+              dispatch(toggleMode());
+              // props.navigation.navigate('AuthStack', {
+              //   screen: 'CreateProfile',
+              //   params: {
+              //     userID: userData.userID,
+              //   },
+              // });
+              // if (userData.isVerified) {
+              //   dispatch(toggleMode());
+              // } else {
+              //   props.navigation.navigate('AuthStack', {
+              //     screen: 'CreateProfile',
+              //     params: {
+              //       userID: userData.userID,
+              //     },
+              //   });
+              // }
+            }}
+          />
+        </View>
+      ) : (
+        <View style={{position: 'relative', width: '100%'}}>
+          <Button
+            title={'Become a seller'}
+            backgroundColor={Colors.primary}
+            round={50}
+            borderColor={Colors.primary}
+            titleStyle={{fontSize: 12}}
+            titleColor={'white'}
+            height={40}
+            onPress={() => {
+              props.navigation.navigate('AuthStack', {
+                screen: 'CreateProfile',
+                params: {
+                  userID: userData.userID,
+                },
+              });
+            }}
+          />
+        </View>
+      )}
       <View style={styles.line} />
       <View style={{position: 'relative', width: '100%'}}>
         <Button

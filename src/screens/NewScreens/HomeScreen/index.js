@@ -97,7 +97,7 @@ const HomeScreen = ({navigation}) => {
           justifyContent: 'center',
         }}>
         <Image
-          source={require('../../../assets/images/nodata.png')}
+          source={require('../../../assets/images/noData.png')}
           style={{height: 100, width: 80, resizeMode: 'contain'}}
         />
         <Text style={{fontFamily: FontFamily.headerSemiBold}}>
